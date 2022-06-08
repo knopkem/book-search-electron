@@ -2,7 +2,7 @@
   "name": "book-search-electron",
   "version": "0.1.0",
   "private": true,
-  "main": "./main.js",
+  "main": "./src/main.js",
   "dependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",

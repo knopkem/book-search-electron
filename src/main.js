@@ -1,14 +1,16 @@
 const { app, BrowserWindow } = require('electron')
+const path = require('path');
 
 function createWindow () {
   // Create the browser window.
   const win = new BrowserWindow({
     title: "Book manager",
-    width: 1280,
-    height: 800,
+    width: 1800,
+    height: 1000,
     autoHideMenuBar: true,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      preload: path.join(__dirname, 'electron-preload.js')
     }
   })
 

@@ -1,9 +1,9 @@
 import React, { useState }  from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Searchbar from './Searchbar';
-const electron = window.require('electron');
-const remote = electron.remote;
-const bounds = remote.getCurrentWindow().webContents.getOwnerBrowserWindow().getBounds();
+
+
+console.log(window.ipcRenderer);
 
 const data = [
   { id: 1, col1: 'Hello', col2: 'World', col3: "test" },
@@ -55,7 +55,7 @@ export default function App() {
   }
 
   return (
-    <div style={{ height: bounds.height, width: '100%' }}>
+    <div style={{ height: 900, width: '100%' }}>
       <Searchbar setNameQuery={setName} setDescriptionQuery={setDescription} setRemarksQuery={setRemarks} ></Searchbar>
       <DataGrid rows={rows} columns={columns} />
     </div>
