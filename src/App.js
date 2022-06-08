@@ -1,9 +1,9 @@
 import React, { useState }  from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Searchbar from './Searchbar';
-import { remote } from "electron";
-
-const bounds = 500; // remote.getCurrentWindow().webContents.getOwnerBrowserWindow().getBounds();
+const electron = window.require('electron');
+const remote = electron.remote;
+const bounds = remote.getCurrentWindow().webContents.getOwnerBrowserWindow().getBounds();
 
 const data = [
   { id: 1, col1: 'Hello', col2: 'World', col3: "test" },
