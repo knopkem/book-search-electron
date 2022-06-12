@@ -1,16 +1,21 @@
-import * as React from "react";
 import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/AddBox";
 
-export default function Searchbar({setNameQuery, setDescriptionQuery, setRemarksQuery}) {
+interface SearchbarProps {
+  setNameQuery: (value: string) => void;
+  setDescriptionQuery: (value: string) => void;
+  setRemarksQuery: (value: string) => void;
+}
+
+export default function Searchbar({setNameQuery, setDescriptionQuery, setRemarksQuery}: SearchbarProps) {
   return (
     <form>
     <TextField
       id="name-field"
       className="text"
       onInput={(e) => {
-        setNameQuery(e.target.value);
+        setNameQuery((e.target as HTMLTextAreaElement).value);
       }}
       label="Name search"
       variant="outlined"
@@ -21,7 +26,7 @@ export default function Searchbar({setNameQuery, setDescriptionQuery, setRemarks
       id="description-field"
       className="text"
       onInput={(e) => {
-        setDescriptionQuery(e.target.value);
+        setDescriptionQuery((e.target as HTMLTextAreaElement).value);
       }}
       label="Description search"
       variant="outlined"
@@ -32,7 +37,7 @@ export default function Searchbar({setNameQuery, setDescriptionQuery, setRemarks
       id="remarks-field"
       className="text"
       onInput={(e) => {
-        setRemarksQuery(e.target.value);
+        setRemarksQuery((e.target as HTMLTextAreaElement).value);
       }}
       label="Remarks search"
       variant="outlined"

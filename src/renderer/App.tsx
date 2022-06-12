@@ -1,9 +1,7 @@
-import React, { useState }  from 'react';
+import { useState }  from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Searchbar from './Searchbar';
 
-
-console.log(window.ipcRenderer);
 
 const data = [
   { id: 1, col1: 'Hello', col2: 'World', col3: "test" },
@@ -26,32 +24,32 @@ export default function App() {
   const [origData, setOrigData] = useState(data);
   const [rows, setRows] = useState(origData);
 
-  function setName(value) {
+  function setName(value: string) {
     setNameFilter(value);
     filter(value, descriptionFilter, remarksFilter);
-  } 
+  }
 
-  function setDescription(value) {
+  function setDescription(value: string) {
     setDescriptionFilter(value);
     filter(nameFilter, value, remarksFilter);
-  } 
+  }
 
-    function setRemarks(value) {
+    function setRemarks(value: string) {
     setRemarksFilter(value);
     filter(nameFilter, descriptionFilter, value);
   }
 
-  function cStr(value1, value2) {
+  function cStr(value1: string, value2: string) {
     return value1.toUpperCase().includes(value2.toUpperCase());
   }
 
-  function filter(name, description, remarks) {
+  function filter(name: string, description: string, remarks: string) {
     const newRows = origData.filter(value => {
 
       const result = cStr(value.col1, name) && cStr(value.col2, description) && cStr(value.col3, remarks);
       return result;
     });
-    setRows(newRows); 
+    setRows(newRows);
   }
 
   return (
