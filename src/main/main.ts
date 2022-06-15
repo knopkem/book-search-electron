@@ -31,6 +31,14 @@ ipcMain.on('ipc-example', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
+ipcMain.handle('ipc-example', async (_event, _arg) => {
+  return [
+    { id: 1, col1: 'Hello', col2: 'World', col3: 'test' },
+    { id: 2, col1: 'DataGridPro', col2: 'is Awesome', col3: 'test' },
+    { id: 3, col1: 'MUI', col2: 'is Amazing', col3: 'test' },
+  ];
+});
+
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();
@@ -71,8 +79,8 @@ const createWindow = async () => {
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1024,
-    height: 728,
+    width: 1900,
+    height: 1000,
     icon: getAssetPath('icon.png'),
     webPreferences: {
       preload: app.isPackaged

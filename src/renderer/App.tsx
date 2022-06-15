@@ -1,13 +1,7 @@
-import { useState }  from 'react';
+import { useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Searchbar from './Searchbar';
-
-
-const data = [
-  { id: 1, col1: 'Hello', col2: 'World', col3: "test" },
-  { id: 2, col1: 'DataGridPro', col2: 'is Awesome', col3: "test" },
-  { id: 3, col1: 'MUI', col2: 'is Amazing', col3: "test" },
-];
+import React from 'react';
 
 const columns = [
   { field: 'col1', headerName: 'Name', editable: true, flex: 1 },
@@ -15,14 +9,27 @@ const columns = [
   { field: 'col3', headerName: 'Remarks', editable: true, flex: 1 },
 ];
 
+interface ColData {
+  col1: string;
+  col2: string;
+  col3: string;
+}
 
 export default function App() {
-
   const [nameFilter, setNameFilter] = useState('');
   const [descriptionFilter, setDescriptionFilter] = useState('');
   const [remarksFilter, setRemarksFilter] = useState('');
-  const [origData, setOrigData] = useState(data);
+  const [origData, setOrigData] = useState([]);
   const [rows, setRows] = useState(origData);
+
+  React.useEffect(() => {
+    window.electron.ipcRenderer
+      .invokeMessage('ipc-example', ['ping2'])
+      .then((data) => {
+        setOrigData(data);
+        setRows(data);
+      });
+  }, []);
 
   function setName(value: string) {
     setNameFilter(value);
@@ -34,7 +41,7 @@ export default function App() {
     filter(nameFilter, value, remarksFilter);
   }
 
-    function setRemarks(value: string) {
+  function setRemarks(value: string) {
     setRemarksFilter(value);
     filter(nameFilter, descriptionFilter, value);
   }
@@ -44,9 +51,11 @@ export default function App() {
   }
 
   function filter(name: string, description: string, remarks: string) {
-    const newRows = origData.filter(value => {
-
-      const result = cStr(value.col1, name) && cStr(value.col2, description) && cStr(value.col3, remarks);
+    const newRows = origData.filter((value: ColData) => {
+      const result =
+        cStr(value.col1, name) &&
+        cStr(value.col2, description) &&
+        cStr(value.col3, remarks);
       return result;
     });
     setRows(newRows);
@@ -54,7 +63,11 @@ export default function App() {
 
   return (
     <div style={{ height: 900, width: '100%' }}>
-      <Searchbar setNameQuery={setName} setDescriptionQuery={setDescription} setRemarksQuery={setRemarks} ></Searchbar>
+      <Searchbar
+        setNameQuery={setName}
+        setDescriptionQuery={setDescription}
+        setRemarksQuery={setRemarks}
+      ></Searchbar>
       <DataGrid rows={rows} columns={columns} />
     </div>
   );
