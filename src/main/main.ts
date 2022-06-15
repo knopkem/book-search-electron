@@ -14,6 +14,22 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import * as fs from 'fs';
+import { parse } from 'csv';
+
+const readCSV = async () => {
+  return new Promise((resolve, reject) => {
+    const parser = parse({ columns: true }, function (err, records) {
+      const mapped = records.map((row, index) => ({
+        id: index,
+        ...row,
+      }));
+      resolve(mapped);
+    });
+
+    fs.createReadStream(__dirname + '/sample.csv').pipe(parser);
+  });
+};
 
 export default class AppUpdater {
   constructor() {
@@ -32,11 +48,7 @@ ipcMain.on('ipc-example', async (event, arg) => {
 });
 
 ipcMain.handle('ipc-example', async (_event, _arg) => {
-  return [
-    { id: 1, col1: 'Hello', col2: 'World', col3: 'test' },
-    { id: 2, col1: 'DataGridPro', col2: 'is Awesome', col3: 'test' },
-    { id: 3, col1: 'MUI', col2: 'is Amazing', col3: 'test' },
-  ];
+  return await readCSV();
 });
 
 if (process.env.NODE_ENV === 'production') {
@@ -82,6 +94,7 @@ const createWindow = async () => {
     width: 1900,
     height: 1000,
     icon: getAssetPath('icon.png'),
+    autoHideMenuBar: true,
     webPreferences: {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
