@@ -1,18 +1,7 @@
-import { useState } from 'react';
-import {
-  DataGrid,
-  GridCellEditStopParams,
-  MuiEvent,
-} from '@mui/x-data-grid';
+import React, { useState } from 'react';
+import Box from '@mui/material/Box';
 import Searchbar from './Searchbar';
-import React from 'react';
 import FullFeaturedCrudGrid from './Grid';
-
-const columns = [
-  { field: 'col1', headerName: 'Name', editable: true, flex: 1 },
-  { field: 'col2', headerName: 'Description', editable: true, flex: 1 },
-  { field: 'col3', headerName: 'Remarks', editable: true, flex: 1 },
-];
 
 interface ColData {
   col1: string;
@@ -33,23 +22,12 @@ export default function App() {
       .then((data) => {
         setOrigData(data);
         setRows(data);
+        return data;
+      })
+      .catch((e) => {
+        console.log(e);
       });
   }, []);
-
-  function setName(value: string) {
-    setNameFilter(value);
-    filter(value, descriptionFilter, remarksFilter);
-  }
-
-  function setDescription(value: string) {
-    setDescriptionFilter(value);
-    filter(nameFilter, value, remarksFilter);
-  }
-
-  function setRemarks(value: string) {
-    setRemarksFilter(value);
-    filter(nameFilter, descriptionFilter, value);
-  }
 
   function cStr(value1: string, value2: string) {
     return value1.toUpperCase().includes(value2.toUpperCase());
@@ -66,21 +44,34 @@ export default function App() {
     setRows(newRows);
   }
 
+  function setName(value: string) {
+    setNameFilter(value);
+    filter(value, descriptionFilter, remarksFilter);
+  }
+
+  function setDescription(value: string) {
+    setDescriptionFilter(value);
+    filter(nameFilter, value, remarksFilter);
+  }
+
+  function setRemarks(value: string) {
+    setRemarksFilter(value);
+    filter(nameFilter, descriptionFilter, value);
+  }
+
   return (
-    <div style={{ height: 900, width: '100%' }}>
+    <Box
+      sx={{
+        height: 900,
+        width: '100%',
+      }}
+    >
       <Searchbar
-        setNameQuery={setName}
-        setDescriptionQuery={setDescription}
-        setRemarksQuery={setRemarks}
-      ></Searchbar>
-      <FullFeaturedCrudGrid rows={rows} columns={columns}/>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        onCellEditStop={(params: GridCellEditStopParams, event: MuiEvent) => {
-          window.electron.ipcRenderer.sendMessage('ipc-example', ['write']);
-        }}
+        setNameQuery={() => setName}
+        setDescriptionQuery={() => setDescription}
+        setRemarksQuery={() => setRemarks}
       />
-    </div>
+      <FullFeaturedCrudGrid rowData={rows} />
+    </Box>
   );
 }

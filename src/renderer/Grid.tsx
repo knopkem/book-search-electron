@@ -13,51 +13,7 @@ import {
   GridToolbarContainer,
   GridActionsCellItem,
 } from '@mui/x-data-grid';
-import {
-  randomCreatedDate,
-  randomTraderName,
-  randomUpdatedDate,
-  randomId,
-} from '@mui/x-data-grid-generator';
-
-
-const initialRows = [
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 25,
-    dateCreated: randomCreatedDate(),
-    lastLogin: randomUpdatedDate(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 36,
-    dateCreated: randomCreatedDate(),
-    lastLogin: randomUpdatedDate(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 19,
-    dateCreated: randomCreatedDate(),
-    lastLogin: randomUpdatedDate(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 28,
-    dateCreated: randomCreatedDate(),
-    lastLogin: randomUpdatedDate(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 23,
-    dateCreated: randomCreatedDate(),
-    lastLogin: randomUpdatedDate(),
-  },
-];
+import { randomId } from '@mui/x-data-grid-generator';
 
 function EditToolbar(props) {
   const { setRows, setRowModesModel } = props;
@@ -85,17 +41,19 @@ EditToolbar.propTypes = {
   setRows: PropTypes.func.isRequired,
 };
 
-export default function FullFeaturedCrudGrid( { rows, columns}) {
-  const [rows, setRows] = React.useState(initialRows);
+interface GridProps {
+  rowData: any[];
+}
+
+export default function FullFeaturedCrudGrid({ rowData }: GridProps) {
+  const [rows, setRows] = React.useState(rowData);
   const [rowModesModel, setRowModesModel] = React.useState({});
 
-  const handleRowEditStart = (params: any, event) => {
-    console.log(params);
+  const handleRowEditStart = (_params: unknown, event) => {
     event.defaultMuiPrevented = true;
   };
 
-  const handleRowEditStop = (params: any, event) => {
-    console.log(rows);
+  const handleRowEditStop = (_params: unknown, event) => {
     event.defaultMuiPrevented = true;
   };
 
@@ -118,7 +76,6 @@ export default function FullFeaturedCrudGrid( { rows, columns}) {
     });
 
     const editedRow = rows.find((row) => row.id === id);
-    console.log(editedRow);
     if (editedRow?.isNew) {
       setRows(rows.filter((row) => row.id !== id));
     }
@@ -131,20 +88,17 @@ export default function FullFeaturedCrudGrid( { rows, columns}) {
   };
 
   const columns = [
-    { field: 'name', headerName: 'Name', width: 180, editable: true },
-    { field: 'age', headerName: 'Age', type: 'number', editable: true },
+    { field: 'name', headerName: 'Name', flex: 1, editable: true },
     {
-      field: 'dateCreated',
-      headerName: 'Date Created',
-      type: 'date',
-      width: 180,
+      field: 'description',
+      headerName: 'Description',
+      flex: 1,
       editable: true,
     },
     {
-      field: 'lastLogin',
-      headerName: 'Last Login',
-      type: 'dateTime',
-      width: 220,
+      field: 'remarks',
+      headerName: 'Remarks',
+      flex: 1,
       editable: true,
     },
     {
@@ -195,7 +149,7 @@ export default function FullFeaturedCrudGrid( { rows, columns}) {
   return (
     <Box
       sx={{
-        height: 500,
+        height: '100%',
         width: '100%',
         '& .actions': {
           color: 'text.secondary',

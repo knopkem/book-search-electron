@@ -12,14 +12,17 @@ import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import MenuBuilder from './menu';
-import { resolveHtmlPath } from './util';
 import * as fs from 'fs';
 import { parse, stringify } from 'csv';
+import MenuBuilder from './menu';
+import { resolveHtmlPath } from './util';
 
 const readCSV = async () => {
   return new Promise((resolve, reject) => {
-    const parser = parse({ columns: true }, function (err, records) {
+    const parser = parse({ columns: true }, (_err, records) => {
+      if (_err) {
+        reject(_err);
+      }
       const mapped = records.map((row, index) => ({
         id: index,
         ...row,
@@ -33,11 +36,10 @@ const readCSV = async () => {
 
 const writeCSV = async () => {
   stringify([
-    [ '1', '2', '3', '4' ],
-    [ 'a', 'b', 'c', 'd' ]
-  ]) .pipe(fs.createWriteStream("out.csv"));
+    ['1', '2', '3', '4'],
+    ['a', 'b', 'c', 'd'],
+  ]).pipe(fs.createWriteStream('out.csv'));
 };
-
 
 export default class AppUpdater {
   constructor() {
@@ -55,9 +57,8 @@ ipcMain.on('ipc-example', async (_event, _arg) => {
   // event.reply('ipc-example', msgTemplate('pong'));
 });
 
-ipcMain.handle('ipc-example', async (_event, arg) => {
-  return await readCSV();
-
+ipcMain.handle('ipc-example', async (_event, _arg) => {
+  return readCSV();
 });
 
 if (process.env.NODE_ENV === 'production') {
