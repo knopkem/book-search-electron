@@ -1,7 +1,12 @@
 import { useState } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridCellEditStopParams,
+  MuiEvent,
+} from '@mui/x-data-grid';
 import Searchbar from './Searchbar';
 import React from 'react';
+import FullFeaturedCrudGrid from './Grid';
 
 const columns = [
   { field: 'col1', headerName: 'Name', editable: true, flex: 1 },
@@ -24,7 +29,7 @@ export default function App() {
 
   React.useEffect(() => {
     window.electron.ipcRenderer
-      .invokeMessage('ipc-example', ['ping2'])
+      .invokeMessage('ipc-example', ['read'])
       .then((data) => {
         setOrigData(data);
         setRows(data);
@@ -68,7 +73,14 @@ export default function App() {
         setDescriptionQuery={setDescription}
         setRemarksQuery={setRemarks}
       ></Searchbar>
-      <DataGrid rows={rows} columns={columns} />
+      <FullFeaturedCrudGrid rows={rows} columns={columns}/>
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        onCellEditStop={(params: GridCellEditStopParams, event: MuiEvent) => {
+          window.electron.ipcRenderer.sendMessage('ipc-example', ['write']);
+        }}
+      />
     </div>
   );
 }

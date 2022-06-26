@@ -15,7 +15,7 @@ import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import * as fs from 'fs';
-import { parse } from 'csv';
+import { parse, stringify } from 'csv';
 
 const readCSV = async () => {
   return new Promise((resolve, reject) => {
@@ -27,9 +27,17 @@ const readCSV = async () => {
       resolve(mapped);
     });
 
-    fs.createReadStream(__dirname + '/sample.csv').pipe(parser);
+    fs.createReadStream('./sample.csv').pipe(parser);
   });
 };
+
+const writeCSV = async () => {
+  stringify([
+    [ '1', '2', '3', '4' ],
+    [ 'a', 'b', 'c', 'd' ]
+  ]) .pipe(fs.createWriteStream("out.csv"));
+};
+
 
 export default class AppUpdater {
   constructor() {
@@ -41,14 +49,15 @@ export default class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 
-ipcMain.on('ipc-example', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
+ipcMain.on('ipc-example', async (_event, _arg) => {
+  console.log(_arg);
+  writeCSV();
+  // event.reply('ipc-example', msgTemplate('pong'));
 });
 
-ipcMain.handle('ipc-example', async (_event, _arg) => {
+ipcMain.handle('ipc-example', async (_event, arg) => {
   return await readCSV();
+
 });
 
 if (process.env.NODE_ENV === 'production') {

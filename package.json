@@ -88,6 +88,7 @@
     }
   },
   "dependencies": {
+    "@mui/x-data-grid-generator": "^5.12.2",
     "csv": "^6.1.2",
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.7",
@@ -99,9 +100,9 @@
   "devDependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
-    "@mui/icons-material": "^5.8.2",
+    "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.2",
-    "@mui/x-data-grid": "^5.12.0",
+    "@mui/x-data-grid": "^5.12.2",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.6",
     "@teamsupercell/typings-for-css-modules-loader": "^2.5.1",
     "@testing-library/jest-dom": "^5.16.4",
