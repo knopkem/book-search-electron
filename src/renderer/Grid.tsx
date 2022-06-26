@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -14,6 +14,7 @@ import {
   GridActionsCellItem,
 } from '@mui/x-data-grid';
 import { randomId } from '@mui/x-data-grid-generator';
+import { ColData } from './types';
 
 function EditToolbar(props) {
   const { setRows, setRowModesModel } = props;
@@ -42,12 +43,26 @@ EditToolbar.propTypes = {
 };
 
 interface GridProps {
-  rowData: any[];
+  rowData: ColData[];
 }
 
+const initialRows = [
+  {
+    id: randomId(),
+    name: 'Please',
+    description: 'wait',
+    remarks: 'loading...',
+    isNew: false,
+  },
+];
+
 export default function FullFeaturedCrudGrid({ rowData }: GridProps) {
-  const [rows, setRows] = React.useState(rowData);
+  const [rows, setRows] = React.useState(initialRows);
   const [rowModesModel, setRowModesModel] = React.useState({});
+
+  useEffect(() => {
+    setRows(rowData);
+  }, [rowData]);
 
   const handleRowEditStart = (_params: unknown, event) => {
     event.defaultMuiPrevented = true;
@@ -167,6 +182,7 @@ export default function FullFeaturedCrudGrid({ rowData }: GridProps) {
         onRowEditStart={handleRowEditStart}
         onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
+        getRowHeight={() => 'auto'}
         components={{
           Toolbar: EditToolbar,
         }}

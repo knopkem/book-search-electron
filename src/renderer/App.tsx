@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
+import Snackbar from '@mui/material/Snackbar';
 import Searchbar from './Searchbar';
 import FullFeaturedCrudGrid from './Grid';
-
-interface ColData {
-  col1: string;
-  col2: string;
-  col3: string;
-}
+import { ColData } from './types';
 
 export default function App() {
   const [nameFilter, setNameFilter] = useState('');
@@ -15,6 +11,24 @@ export default function App() {
   const [remarksFilter, setRemarksFilter] = useState('');
   const [origData, setOrigData] = useState([]);
   const [rows, setRows] = useState(origData);
+  const [message, setMessage] = useState('Unknown Error');
+  const [open, setOpen] = useState(false);
+
+  const showMessage = (_message: string) => {
+    setMessage(_message);
+    setOpen(true);
+  };
+
+  const handleClose = (
+    _event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   React.useEffect(() => {
     window.electron.ipcRenderer
@@ -25,7 +39,7 @@ export default function App() {
         return data;
       })
       .catch((e) => {
-        console.log(e);
+        showMessage(e.message);
       });
   }, []);
 
@@ -36,9 +50,9 @@ export default function App() {
   function filter(name: string, description: string, remarks: string) {
     const newRows = origData.filter((value: ColData) => {
       const result =
-        cStr(value.col1, name) &&
-        cStr(value.col2, description) &&
-        cStr(value.col3, remarks);
+        cStr(value.name, name) &&
+        cStr(value.description, description) &&
+        cStr(value.remarks, remarks);
       return result;
     });
     setRows(newRows);
@@ -72,6 +86,12 @@ export default function App() {
         setRemarksQuery={() => setRemarks}
       />
       <FullFeaturedCrudGrid rowData={rows} />
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message={message}
+      />
     </Box>
   );
 }

@@ -27,6 +27,7 @@ const readCSV = async () => {
         id: index,
         ...row,
       }));
+      console.log('reading CSV data', mapped);
       resolve(mapped);
     });
 
@@ -57,6 +58,7 @@ ipcMain.on('ipc-example', async (_event, _arg) => {
   // event.reply('ipc-example', msgTemplate('pong'));
 });
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 ipcMain.handle('ipc-example', async (_event, _arg) => {
   return readCSV();
 });
