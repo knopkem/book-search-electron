@@ -27,7 +27,6 @@ const readCSV = async () => {
         id: index,
         ...row,
       }));
-      console.log('reading CSV data', mapped);
       resolve(mapped);
     });
 
@@ -36,7 +35,7 @@ const readCSV = async () => {
 };
 
 const writeCSV = async (data) => {
-  stringify(data).pipe(fs.createWriteStream('out.csv'));
+  stringify(data).pipe(fs.createWriteStream('./sample.csv'));
 };
 
 export default class AppUpdater {
@@ -50,7 +49,6 @@ export default class AppUpdater {
 let mainWindow: BrowserWindow | null = null;
 
 ipcMain.on('ipc-example', async (_event, _arg) => {
-  console.log('writing csv data: ', _arg);
   writeCSV(_arg);
   // event.reply('ipc-example', msgTemplate('pong'));
 });

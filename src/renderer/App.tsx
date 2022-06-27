@@ -2,6 +2,13 @@ import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Snackbar from '@mui/material/Snackbar';
 import FullFeaturedCrudGrid from './Grid';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'light',
+  },
+});
 
 export default function App() {
   const [origData, setOrigData] = useState([]);
@@ -39,6 +46,7 @@ export default function App() {
   }, []);
 
   return (
+    <ThemeProvider theme={darkTheme}>
     <Box
       sx={{
         height: 900,
@@ -53,5 +61,6 @@ export default function App() {
         message={message}
       />
     </Box>
+    </ThemeProvider>
   );
 }

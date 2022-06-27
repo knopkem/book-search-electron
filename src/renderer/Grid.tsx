@@ -26,7 +26,10 @@ function EditToolbar(props) {
 
   const addNewRow = () => {
     const id = randomId();
-    setRows((oldRows) => [...oldRows, { id, name: '', description: '', remarks: '', isNew: true }]);
+    setRows((oldRows) => [
+      ...oldRows,
+      { id, name: '', description: '', remarks: '', isNew: true },
+    ]);
     setFullRows((oldRows) => [
       ...oldRows,
       { id, name: '', age: '', isNew: true },
@@ -123,9 +126,9 @@ interface GridProps {
 const initialRows = [
   {
     id: randomId(),
-    name: 'Please',
-    description: 'wait',
-    remarks: 'loading...',
+    name: 'name',
+    description: 'description',
+    remarks: 'remarks',
     isNew: false,
   },
 ];
@@ -134,14 +137,32 @@ export default function FullFeaturedCrudGrid({ rowData }: GridProps) {
   const [fullRows, setFullRows] = useState(initialRows);
   const [rows, setRows] = useState(initialRows);
   const [rowModesModel, setRowModesModel] = useState({});
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     setFullRows(rowData);
     setRows(rowData);
+    setInitialized(true);
   }, [rowData]);
 
   useEffect(() => {
-    window.electron.ipcRenderer.sendMessage('ipc-example', fullRows);
+    if (!initialized) return;
+
+    const header = [
+      {
+        id: randomId(),
+        name: 'name',
+        description: 'description',
+        remarks: 'remarks',
+        isNew: false,
+      },
+    ];
+
+    const withHeader = header.concat(fullRows);
+    const rowData = withHeader.map(({id, isNew, ...rest}) => {
+      return rest;
+    });
+    window.electron.ipcRenderer.sendMessage('ipc-example', rowData);
   });
 
   const handleRowEditStart = (_params: unknown, event) => {
