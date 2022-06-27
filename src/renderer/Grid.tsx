@@ -26,7 +26,7 @@ function EditToolbar(props) {
 
   const addNewRow = () => {
     const id = randomId();
-    setRows((oldRows) => [...oldRows, { id, name: '', age: '', isNew: true }]);
+    setRows((oldRows) => [...oldRows, { id, name: '', description: '', remarks: '', isNew: true }]);
     setFullRows((oldRows) => [
       ...oldRows,
       { id, name: '', age: '', isNew: true },
@@ -139,6 +139,10 @@ export default function FullFeaturedCrudGrid({ rowData }: GridProps) {
     setFullRows(rowData);
     setRows(rowData);
   }, [rowData]);
+
+  useEffect(() => {
+    window.electron.ipcRenderer.sendMessage('ipc-example', fullRows);
+  });
 
   const handleRowEditStart = (_params: unknown, event) => {
     event.defaultMuiPrevented = true;
