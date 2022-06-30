@@ -17,6 +17,15 @@ import { parse, stringify } from 'csv';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
+
+function getUserDoc() {
+  return '.';
+  // return process.env.USERPROFILE+'\\Documents';
+}
+
+const csvName = 'books.csv';
+const csvPath = getUserDoc() + '\\' + csvName;
+
 const readCSV = async () => {
   return new Promise((resolve, reject) => {
     const parser = parse({ columns: true }, (_err, records) => {
@@ -30,12 +39,12 @@ const readCSV = async () => {
       resolve(mapped);
     });
 
-    fs.createReadStream('./sample.csv').pipe(parser);
+    fs.createReadStream(csvPath).pipe(parser);
   });
 };
 
 const writeCSV = async (data) => {
-  stringify(data).pipe(fs.createWriteStream('./sample.csv'));
+  stringify(data).pipe(fs.createWriteStream(csvPath));
 };
 
 export default class AppUpdater {
