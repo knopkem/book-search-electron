@@ -49,7 +49,7 @@ export default function App() {
     <ThemeProvider theme={darkTheme}>
       <Box
         sx={{
-          height: 950,
+          height: 930,
           width: '100%',
         }}
       >

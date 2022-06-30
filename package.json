@@ -170,7 +170,7 @@
     "webpack-merge": "^5.8.0"
   },
   "build": {
-    "productName": "BookManager",
+    "productName": "Ingrids Book Manager",
     "appId": "org.erb.BookManager",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
