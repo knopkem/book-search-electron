@@ -16,6 +16,7 @@ import {
 } from '@mui/x-data-grid';
 import { randomId } from '@mui/x-data-grid-generator';
 import { ColData } from './types';
+import AlertBox from './AlertBox';
 
 function EditToolbar(props) {
   const { fullRows, setRows, setFullRows, setRowModesModel } = props;
@@ -138,6 +139,7 @@ export default function FullFeaturedCrudGrid({ rowData }: GridProps) {
   const [rows, setRows] = useState(initialRows);
   const [rowModesModel, setRowModesModel] = useState({});
   const [initialized, setInitialized] = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     setFullRows(rowData);
@@ -159,10 +161,10 @@ export default function FullFeaturedCrudGrid({ rowData }: GridProps) {
     ];
 
     const withHeader = header.concat(fullRows);
-    const rowData = withHeader.map(({id, isNew, ...rest}) => {
+    const filteredData = withHeader.map(({ id, isNew, ...rest }) => {
       return rest;
     });
-    window.electron.ipcRenderer.sendMessage('ipc-example', rowData);
+    window.electron.ipcRenderer.sendMessage('ipc-example', filteredData);
   });
 
   const handleRowEditStart = (_params: unknown, event) => {
@@ -182,8 +184,9 @@ export default function FullFeaturedCrudGrid({ rowData }: GridProps) {
   };
 
   const handleDeleteClick = (id) => () => {
-    setRows(rows.filter((row) => row.id !== id));
-    setFullRows(fullRows.filter((row) => row.id !== id));
+    setOpen(true);
+    // setRows(rows.filter((row) => row.id !== id));
+    // setFullRows(fullRows.filter((row) => row.id !== id));
   };
 
   const handleCancelClick = (id) => () => {
@@ -297,6 +300,7 @@ export default function FullFeaturedCrudGrid({ rowData }: GridProps) {
         }}
         experimentalFeatures={{ newEditingApi: true }}
       />
+      <AlertBox openProp={open} />
     </Box>
   );
 }

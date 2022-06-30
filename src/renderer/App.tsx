@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Snackbar from '@mui/material/Snackbar';
-import FullFeaturedCrudGrid from './Grid';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import FullFeaturedCrudGrid from './Grid';
 
 const darkTheme = createTheme({
   palette: {
@@ -47,20 +47,20 @@ export default function App() {
 
   return (
     <ThemeProvider theme={darkTheme}>
-    <Box
-      sx={{
-        height: 900,
-        width: '100%',
-      }}
-    >
-      <FullFeaturedCrudGrid rowData={rows} />
-      <Snackbar
-        open={open}
-        autoHideDuration={6000}
-        onClose={handleClose}
-        message={message}
-      />
-    </Box>
+      <Box
+        sx={{
+          height: 900,
+          width: '100%',
+        }}
+      >
+        <FullFeaturedCrudGrid rowData={rows} />
+        <Snackbar
+          open={open}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          message={message}
+        />
+      </Box>
     </ThemeProvider>
   );
 }
