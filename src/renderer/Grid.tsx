@@ -140,6 +140,7 @@ export default function FullFeaturedCrudGrid({ rowData }: GridProps) {
   const [rowModesModel, setRowModesModel] = useState({});
   const [initialized, setInitialized] = useState(false);
   const [open, setOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState('');
 
   useEffect(() => {
     setFullRows(rowData);
@@ -184,9 +185,8 @@ export default function FullFeaturedCrudGrid({ rowData }: GridProps) {
   };
 
   const handleDeleteClick = (id) => () => {
+    setSelectedId(id);
     setOpen(true);
-    // setRows(rows.filter((row) => row.id !== id));
-    // setFullRows(fullRows.filter((row) => row.id !== id));
   };
 
   const handleCancelClick = (id) => () => {
@@ -210,6 +210,16 @@ export default function FullFeaturedCrudGrid({ rowData }: GridProps) {
     );
     return updatedRow;
   };
+
+  const handleClose = () => {
+    setOpen(false);
+  }
+
+  const handleOk = () => {
+    setRows(rows.filter((row) => row.id !== selectedId));
+    setFullRows(fullRows.filter((row) => row.id !== selectedId));
+    setOpen(false);
+  }
 
   const columns = [
     { field: 'name', headerName: 'Name', flex: 1, editable: true },
@@ -300,7 +310,7 @@ export default function FullFeaturedCrudGrid({ rowData }: GridProps) {
         }}
         experimentalFeatures={{ newEditingApi: true }}
       />
-      <AlertBox openProp={open} />
+      <AlertBox open={open} handleClose={handleClose} handleOk={handleOk} />
     </Box>
   );
 }

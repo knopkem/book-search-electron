@@ -7,19 +7,12 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
 interface AlertProps {
-  openProp: boolean;
+ open: boolean;
+ handleClose: any;
+ handleOk: any;
 }
 
-export default function AlertDialog({ openProp }: AlertProps) {
-  const [open, setOpen] = useState(openProp);
-
-  useEffect(() => {
-    setOpen(openProp);
-  }, [openProp]);
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+export default function AlertDialog({ open, handleClose, handleOk }: AlertProps) {
 
   return (
     <Dialog
@@ -33,14 +26,13 @@ export default function AlertDialog({ openProp }: AlertProps) {
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          Let Google help apps determine location. This means sending anonymous
-          location data to Google, even when no apps are running.
+          Are you sure you want to delete this entry? This action cannot be undone.
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Disagree</Button>
-        <Button onClick={handleClose} autoFocus>
-          Agree
+        <Button onClick={handleClose}>cancel</Button>
+        <Button onClick={handleOk} autoFocus>
+          Delete
         </Button>
       </DialogActions>
     </Dialog>
