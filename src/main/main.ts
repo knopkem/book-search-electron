@@ -19,8 +19,7 @@ import { resolveHtmlPath } from './util';
 
 
 function getUserDoc() {
-  return '.';
-  // return process.env.USERPROFILE+'\\Documents';
+  return (process.env.NODE_ENV === 'production') ? process.env.USERPROFILE+'\\Documents' : '.';
 }
 
 const csvName = 'books.csv';
@@ -112,6 +111,7 @@ const createWindow = async () => {
     icon: getAssetPath('icon.png'),
     autoHideMenuBar: true,
     webPreferences: {
+      devTools: false,
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
@@ -146,7 +146,7 @@ const createWindow = async () => {
 
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
-  new AppUpdater();
+  // new AppUpdater();
 };
 
 /**
