@@ -78,7 +78,7 @@ function EditToolbar(props) {
         onInput={(e) => {
           setNameQuery((e.target as HTMLTextAreaElement).value);
         }}
-        label="Name search"
+        label="Author search"
         variant="outlined"
         placeholder="Search..."
         size="small"
@@ -89,7 +89,7 @@ function EditToolbar(props) {
         onInput={(e) => {
           setDescriptionQuery((e.target as HTMLTextAreaElement).value);
         }}
-        label="Description search"
+        label="Title search"
         variant="outlined"
         placeholder="Search..."
         size="small"
@@ -213,19 +213,19 @@ export default function FullFeaturedCrudGrid({ rowData }: GridProps) {
 
   const handleClose = () => {
     setOpen(false);
-  }
+  };
 
   const handleOk = () => {
     setRows(rows.filter((row) => row.id !== selectedId));
     setFullRows(fullRows.filter((row) => row.id !== selectedId));
     setOpen(false);
-  }
+  };
 
   const columns = [
-    { field: 'name', headerName: 'Name', flex: 1, editable: true },
+    { field: 'name', headerName: 'Author', flex: 1, editable: true },
     {
       field: 'description',
-      headerName: 'Description',
+      headerName: 'Title',
       flex: 1,
       editable: true,
     },

@@ -17,13 +17,14 @@ import { parse, stringify } from 'csv';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
-
 function getUserDoc() {
-  return (process.env.NODE_ENV === 'production') ? process.env.USERPROFILE+'\\Documents' : '.';
+  return process.env.NODE_ENV === 'production'
+    ? `${process.env.USERPROFILE}\\Documents`
+    : '.';
 }
 
 const csvName = 'books.csv';
-const csvPath = getUserDoc() + '\\' + csvName;
+const csvPath = `${getUserDoc()}\\${csvName}`;
 
 const readCSV = async () => {
   return new Promise((resolve, reject) => {
@@ -111,6 +112,7 @@ const createWindow = async () => {
     icon: getAssetPath('icon.png'),
     autoHideMenuBar: true,
     webPreferences: {
+      spellcheck: false,
       devTools: false,
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
