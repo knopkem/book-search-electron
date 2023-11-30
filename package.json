@@ -91,6 +91,7 @@
     "@mui/x-data-grid-generator": "^5.12.2",
     "csv": "^6.1.2",
     "electron-debug": "^3.2.0",
+    "electron-fetch": "^1.9.1",
     "electron-log": "^4.4.7",
     "electron-updater": "^5.0.1",
     "react": "^18.1.0",

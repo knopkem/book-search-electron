@@ -16,6 +16,7 @@ import * as fs from 'fs';
 import { parse, stringify } from 'csv';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import fetch from 'electron-fetch';
 
 function getUserDoc() {
   return process.env.NODE_ENV === 'production'
@@ -43,8 +44,20 @@ const readCSV = async () => {
   });
 };
 
+const postToCloud = async (data) => {
+  fetch('http://localhost:3000/books', {
+	method: 'POST',
+	body:    JSON.stringify(data),
+	headers: { 'Content-Type': 'application/json' },
+})
+	.then(res => res.json())
+	.then(json => console.log(json))
+  .catch(e => console.error(e));
+};
+
 const writeCSV = async (data) => {
-  stringify(data).pipe(fs.createWriteStream(csvPath));
+  await stringify(data).pipe(fs.createWriteStream(csvPath));
+  return postToCloud(data);
 };
 
 export default class AppUpdater {
