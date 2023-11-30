@@ -41,7 +41,7 @@ const readCSV = async () => {
     });
 
     fs.createReadStream(csvPath).pipe(parser);
-  });
+  }).catch(e => console.error(e));
 };
 
 const postToCloud = async (data) => {
