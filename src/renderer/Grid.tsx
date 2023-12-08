@@ -71,7 +71,7 @@ function EditToolbar(props) {
     filter(nameFilter, descriptionFilter, value);
   }
   return (
-    <GridToolbarContainer>
+    <GridToolbarContainer sx={{ padding: 2 }}>
       <TextField
         id="name-field"
         className="text"
@@ -285,12 +285,6 @@ export default function FullFeaturedCrudGrid({ rowData }: GridProps) {
       sx={{
         height: '100%',
         width: '100%',
-        '& .actions': {
-          color: 'text.secondary',
-        },
-        '& .textPrimary': {
-          color: 'text.primary',
-        },
       }}
     >
       <DataGrid
@@ -309,6 +303,7 @@ export default function FullFeaturedCrudGrid({ rowData }: GridProps) {
           toolbar: { setRows, setRowModesModel, fullRows, setFullRows },
         }}
         experimentalFeatures={{ newEditingApi: true }}
+        sx={{ m: 0 }}
       />
       <AlertBox open={open} handleClose={handleClose} handleOk={handleOk} />
     </Box>
