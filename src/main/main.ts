@@ -17,6 +17,7 @@ import { parse, stringify } from 'csv';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import fetch from 'electron-fetch';
+import settings from 'electron-settings';
 
 function getUserDoc() {
   return process.env.NODE_ENV === 'production'
@@ -41,18 +42,36 @@ const readCSV = async () => {
     });
 
     fs.createReadStream(csvPath).pipe(parser);
-  }).catch(e => console.error(e));
+  }).catch((e) => console.error(e));
 };
 
+const readSettings = async () => {
+  const url = (await settings.get('cloud.url')) as string;
+  const token = (await settings.get('cloud.token')) as string;
+  return {
+    url,
+    token
+  }
+}
+
 const postToCloud = async (data) => {
-  fetch('http://localhost:3000/books', {
-	method: 'POST',
-	body:    JSON.stringify(data),
-	headers: { 'Content-Type': 'application/json' },
-})
-	.then(res => res.json())
-	.then(json => console.log(json))
-  .catch(e => console.error(e));
+  const {url, token} =  await readSettings();
+
+  if (!url || !token) return;
+  console.log(`synching to ${url}`);
+  return;
+
+  fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((res) => res.json())
+    .then((json) => console.log(json))
+    .catch((e) => console.error(e));
 };
 
 const writeCSV = async (data) => {
@@ -70,15 +89,25 @@ export default class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 
-ipcMain.on('ipc-example', async (_event, _arg) => {
-  writeCSV(_arg);
-  // event.reply('ipc-example', msgTemplate('pong'));
+ipcMain.on('save-settings', async (_event, _arg) => {
+  await settings.set('cloud', {
+    ..._arg,
+  });
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-ipcMain.handle('ipc-example', async (_event, _arg) => {
+ipcMain.on('update-selection', async (_event, _arg) => {
+  writeCSV(_arg);
+});
+
+ipcMain.handle('get-data', async () => {
   return readCSV();
 });
+
+ipcMain.handle('read-settings', async () => {
+  console.log('reading settings');
+  return readSettings();
+});
+
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -123,7 +152,7 @@ const createWindow = async () => {
     width: 1900,
     height: 1000,
     icon: getAssetPath('icon.png'),
-    autoHideMenuBar: true,
+    autoHideMenuBar: false,
     webPreferences: {
       spellcheck: false,
       devTools: true,
@@ -158,10 +187,6 @@ const createWindow = async () => {
     shell.openExternal(edata.url);
     return { action: 'deny' };
   });
-
-  // Remove this if your app does not use auto updates
-  // eslint-disable-next-line
-  // new AppUpdater();
 };
 
 /**

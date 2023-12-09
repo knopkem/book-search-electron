@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Snackbar from '@mui/material/Snackbar';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import FullFeaturedCrudGrid from './Grid';
+import SettingsDialog from './Settings';
 
 const darkTheme = createTheme({
   palette: {
@@ -15,6 +16,7 @@ export default function App() {
   const [rows, setRows] = useState(origData);
   const [message, setMessage] = useState('Unknown Error');
   const [open, setOpen] = useState(false);
+  const [openSettings, setOpenSettings] = useState(false);
 
   const showMessage = (_message: string) => {
     setMessage(_message);
@@ -32,9 +34,19 @@ export default function App() {
     setOpen(false);
   };
 
+  const handleSettingsClose = () => {
+    setOpenSettings(false);
+  };
+
+  const handleSettingsSave = (data) => {
+    window.electron.ipcRenderer.sendMessage('save-settings', data);
+    setOpenSettings(false);
+  };
+
+
   React.useEffect(() => {
     window.electron.ipcRenderer
-      .invokeMessage('ipc-example', ['read'])
+      .invokeMessage('get-data', [])
       .then((data) => {
         setOrigData(data);
         setRows(data);
@@ -44,6 +56,10 @@ export default function App() {
         showMessage(e.message);
       });
   }, []);
+
+  window.electron.ipcRenderer.on('open-settings',() => {
+    setOpenSettings(true);
+  });
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -60,6 +76,7 @@ export default function App() {
           onClose={handleClose}
           message={message}
         />
+      <SettingsDialog open={openSettings} handleClose={handleSettingsClose} handleOk={handleSettingsSave} />
       </Box>
     </ThemeProvider>
   );

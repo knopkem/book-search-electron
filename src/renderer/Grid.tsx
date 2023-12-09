@@ -165,7 +165,7 @@ export default function FullFeaturedCrudGrid({ rowData }: GridProps) {
     const filteredData = withHeader.map(({ id, isNew, ...rest }) => {
       return rest;
     });
-    window.electron.ipcRenderer.sendMessage('ipc-example', filteredData);
+    window.electron.ipcRenderer.sendMessage('update-selection', filteredData);
   });
 
   const handleRowEditStart = (_params: unknown, event) => {
