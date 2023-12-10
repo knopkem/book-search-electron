@@ -17,12 +17,14 @@ export default function SettingsDialog({ open, handleClose, handleOk }: AlertPro
 
   const [url, setUrl] = useState('');
   const [token, setToken] = useState('');
+  const [errorUrl, setErrorUrl] = useState(false);
+  const [errorToken, setErrorToken] = useState(false);
+
 
   useEffect(() => {
     window.electron.ipcRenderer
       .invokeMessage('read-settings', [])
       .then((data) => {
-        console.log(data);
         if (data.url) setUrl(data.url);
         if (data.token) setToken(data.token);
         return data;
@@ -53,14 +55,23 @@ export default function SettingsDialog({ open, handleClose, handleOk }: AlertPro
           <TextField
             autoFocus
             margin="dense"
+            error={errorUrl}
             id="url"
             label="Cloud Storage URL"
             type="url"
             fullWidth
             value={url}
             variant="standard"
+            helperText="invalid url"
             onChange={e => {
-              setUrl(e.target.value)
+              const expression = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
+              const regex = new RegExp(expression);
+              setErrorUrl(!e.target.value.match(regex));
+              if (e.target.value.includes('localhost') || e.target.value.includes('127.0.0.1')) {
+                setErrorUrl(false);
+              }
+              if (e.target.value === '') setErrorUrl(false);
+              setUrl(e.target.value);
             }}
           />
           <TextField
@@ -72,14 +83,18 @@ export default function SettingsDialog({ open, handleClose, handleOk }: AlertPro
             value={token}
             fullWidth
             variant="standard"
+            error={errorToken}
+            required={url !== ''}
+            helperText='access token required'
             onChange={e => {
+              setErrorToken(url !== '' && e.target.value === '');
               setToken(e.target.value)
             }}
           />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>cancel</Button>
-        <Button onClick={handleSettingsSave} autoFocus>
+        <Button onClick={handleSettingsSave} autoFocus disabled={errorUrl || errorToken || (url !== '' && token === '')}>
           save
         </Button>
       </DialogActions>

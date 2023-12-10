@@ -42,7 +42,10 @@ const readCSV = async () => {
     });
 
     fs.createReadStream(csvPath).pipe(parser);
-  }).catch((e) => console.error(e));
+  }).catch((e) => {
+    console.error(e);
+    return [];
+  });
 };
 
 const readSettings = async () => {
