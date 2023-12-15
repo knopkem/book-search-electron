@@ -62,9 +62,8 @@ const postToCloud = async (data) => {
 
   if (!url || !token) return;
   console.log(`synching to ${url}`);
-  return;
 
-  fetch(url, {
+  fetch(url + '/books', {
     method: 'POST',
     body: JSON.stringify(data),
     headers: {
