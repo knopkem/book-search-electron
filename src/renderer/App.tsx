@@ -4,6 +4,7 @@ import Snackbar from '@mui/material/Snackbar';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import FullFeaturedCrudGrid from './Grid';
 import SettingsDialog from './Settings';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 const darkTheme = createTheme({
   palette: {
@@ -56,6 +57,10 @@ export default function App() {
         showMessage(e.message);
       });
   }, []);
+
+  window.electron.ipcRenderer.on('sync-failure', () => {
+    showMessage('cloud synchronization failed');
+  });
 
   window.electron.ipcRenderer.on('open-settings',() => {
     setOpenSettings(true);

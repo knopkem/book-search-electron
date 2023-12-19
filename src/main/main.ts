@@ -27,6 +27,7 @@ function getUserDoc() {
 
 const csvName = 'books.csv';
 const csvPath = `${getUserDoc()}\\${csvName}`;
+let lastData = 'unknown';
 
 const readCSV = async () => {
   return new Promise((resolve, reject) => {
@@ -73,11 +74,14 @@ const postToCloud = async (data) => {
   })
     .then((res) => res.json())
     .then((json) => console.log(json))
-    .catch((e) => console.error(e));
+    .catch((e) => mainWindow?.webContents.send('sync-failure'),);
 };
 
 const writeCSV = async (data) => {
+  const dataStr = JSON.stringify(data);
+  if (dataStr === lastData) return
   await stringify(data).pipe(fs.createWriteStream(csvPath));
+  lastData = dataStr;
   return postToCloud(data);
 };
 
@@ -157,7 +161,7 @@ const createWindow = async () => {
     autoHideMenuBar: false,
     webPreferences: {
       spellcheck: false,
-      devTools: true,
+      devTools: false,
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
